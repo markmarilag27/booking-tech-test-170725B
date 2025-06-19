@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BookingStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('service_id');
             $table->datetime('starts_at');
             $table->datetime('ends_at');
-            $table->string('status');
+            $table->enum('status', BookingStatus::values())->default(BookingStatus::PENDING);
             $table->integer('total_price_cents')->default(0);
             $table->timestamps();
 

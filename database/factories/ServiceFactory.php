@@ -17,7 +17,7 @@ class ServiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->randomElement([
+            'name' => fake()->randomElement([
                 'Yoga Class',
                 'Pilates Class',
                 'Meditation Class',
@@ -26,6 +26,14 @@ class ServiceFactory extends Factory
                 'Cooking Class',
                 'Dance Class',
                 'Guitar Lesson',
+                'Piano Lesson',
+                'Haircut',
+                'Massage',
+                'Facial',
+                'Manicure',
+                'Pedicure',
+                'Spa Day',
+                'Yoga Retreat',
             ]),
         ];
     }
