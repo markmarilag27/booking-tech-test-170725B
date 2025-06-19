@@ -1,61 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Booking System API Assignment
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Welcome to the **Nabooki** Software Engineering Laravel tech test.
 
-## About Laravel
+This repository contains a clean **Laravel 12** project template, designed as a take-home assignment. It requires at least **PHP 8.2** and **Composer** installed. An in-memory **SQLite database** is already configured for testing.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Setup Instructions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Follow these steps to set up the project for development:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Fork and Clone this repository
 
-## Learning Laravel
+First, **fork this repository on GitHub** to your own account. Then, clone your forked repository to your local machine:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone <repository-url>
+cd tech-test
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2. Install dependencies
+```bash
+composer install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Configure environment
+```bash
+cp .env.example .env
+```
 
-## Laravel Sponsors
+### 4. Generate application key
+```bash
+php artisan key:generate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 5. Set up database and seed with test data
+```bash
+php artisan migrate --seed
+```
 
-### Premium Partners
+This command will:
+- Create the SQLite database file (`database/database.sqlite`)
+- Run all migrations to create the necessary tables
+- Populate the database with test data including:
+  - 1 test user (test@example.com, password: password)
+  - 15 sample customers
+  - 10 sample services
+  - 30 sample bookings with random statuses
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Note:** If you wish to spin up an environment to suit your workflow during development, you are completely free to do so. However, please keep in mind that solutions will be evaluated on the tests you write, and no additional setup should be required for `php artisan test` to be executed beyond the initial steps provided here.
 
-## Contributing
+You should not require any additional composer packages to complete this task. If you do decide to add any, please explain your reasoning for doing so in your submission.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Authentication for Testing
 
-## Code of Conduct
+This project uses **Laravel Sanctum** for API authentication. To test your API endpoint, you will need to generate a token for your user.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Assignment Task: Booking System API Enhancement
 
-## Security Vulnerabilities
+We are mindful of your time, and this task is designed to accommodate various valid solutions. Your solution will be primarily evaluated on your use of tests as well as your implementation and understanding of Laravel conventions.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+This test should not take hours from your time; we encourage you to provide a solution that meets the requirements effectively, without over-engineering.
 
-## License
+You do not need to "impress" us with everything you know or coding "clever" solutions. Work with the provided structure and feel free to get in touch if there are any gaps.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+If you feel you would approach any of these tasks differently given more time, please provide the details as part of your submission.
+
+#### Task: Expose a New API Endpoint to List All Bookings
+
+Implement a new **internal API endpoint** `GET /api/bookings` to list all bookings in the system. This endpoint will exist only for **authenticated users** and will be consumed by an internal SPA frontend.
+
+As part of exposing these details, we only want to provide the following data for each booking:
+
+- Booking ID
+- Customer Full Name
+- Service Name
+- Starts At (ISO datetime format)
+- Ends At (ISO datetime format)
+- Status
+- Total Price:
+  - This value must be only visible in the response for **confirmed** bookings
+  - This value is stored as cents in the database, this must be displayed in human readable dollar format
+
+The following must also be observed:
+
+- The data returned should be paginated for scalability.
+- The oldest bookings must be at the top of the list.
+- The endpoint should accept optional filters: service_id (integer), status (e.g., pending, confirmed, cancelled), date_from (YYYY-MM-DD), and date_to (YYYY-MM-DD).
+
+**NOTE:** You are not required to implement any additional auth features/tests, and you can assume any/all auth associated tests are already done. You are also not required to build out the frontend as part of this task.
+
+## Evaluation Criteria
+
+Your solution will be evaluated primarily based on your:
+
+1. **Testing Approach:** The quality and coverage of your tests.
+2. **Code Quality:** Clean, readable, and well-organized code following Laravel and PHP best practices.
+3. **Laravel Conventions:** Proper and idiomatic use of Laravel features (Eloquent, controllers, resources, routing, middleware).
+4. **API Design:** Adherence to RESTful principles, clear query parameters, and appropriate HTTP status codes.
+5. **Problem-Solving:** Your ability to meet the requirements efficiently and robustly.
+6. **Git Workflow:** Clear and descriptive Git commit messages
+
+## Submission
+
+When you're ready to submit your solution:
+
+1. Ensure all your changes are committed with clear, descriptive commit messages
+2. Push your changes to your forked repository
+3. Open a Pull Request from your branch to the `main` branch
+4. Include a brief description of your implementation approach in the PR description
+
+We encourage you to leave comments through your Pull Request to explain your thoughts if you feel so.
+
+Good luck with your implementation!
