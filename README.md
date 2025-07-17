@@ -17,22 +17,29 @@ git clone <repository-url>
 cd tech-test
 ```
 
-### 2. Install dependencies
+### 2. Build the docker image
+```bash
+docker compose build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
+bash ./run-start.sh
+bash ./run-ssh.sh
+```
+
+### 3. Install dependencies
 ```bash
 composer install
 ```
 
-### 3. Configure environment
+### 4. Configure environment
 ```bash
 cp .env.example .env
 ```
 
-### 4. Generate application key
+### 5. Generate application key
 ```bash
 php artisan key:generate
 ```
 
-### 5. Set up database and seed with test data
+### 6. Set up database and seed with test data
 ```bash
 php artisan migrate --seed
 ```

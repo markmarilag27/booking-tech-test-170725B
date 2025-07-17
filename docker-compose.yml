@@ -1,0 +1,20 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: markmarilag/php82:latest
+        container_name: app
+        restart: unless-stopped
+        volumes:
+            - .:/var/www
+            - ~/.ssh:/home/devuser/.ssh
+        ports:
+            - 9000:9000
+            - 8000:8000
+        networks:
+            - default
+
+networks:
+    default:
+        driver: bridge
