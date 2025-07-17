@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Number;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -230,5 +231,39 @@ class BookingControllerTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors('service_id');
+    }
+
+    public function test_it_shows_total_price_when_status_is_confirmed(): void
+    {
+        Sanctum::actingAs($this->authUser);
+
+         Booking::factory()->for($this->customer)->for($this->service)->create([
+            'status' => BookingStatus::CONFIRMED,
+            'total_price_cents' => 1500 * 100,
+        ]);
+
+        $uri = action([BookingController::class, 'index'], ['status' => BookingStatus::CONFIRMED->value]);
+
+        $response = $this->getJson($uri);
+
+        $response->assertOk()
+            ->assertJsonFragment(['total_price' => Number::currency(1500, 'USD')]);
+    }
+
+    public function test_it_hides_total_price_when_status_is_not_confirmed(): void
+    {
+        Sanctum::actingAs($this->authUser);
+
+        Booking::factory()->for($this->customer)->for($this->service)->create([
+            'status' => BookingStatus::PENDING,
+            'total_price_cents' => 9999 * 100,
+        ]);
+
+        $uri = action([BookingController::class, 'index'], ['status' => BookingStatus::PENDING->value]);
+
+        $response = $this->getJson($uri);
+
+        $response->assertOk()
+            ->assertJsonMissing(['total_price' => 9999]);
     }
 }
