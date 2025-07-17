@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,5 +42,28 @@ class Booking extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    #[Scope]
+    public function filterService(Builder $query, ?int $serviceId): Builder
+    {
+        return is_null($serviceId) ? $query : $query->where('service_id', $serviceId);
+    }
+
+    #[Scope]
+    public function filterStatus(Builder $query, ?string $status): Builder
+    {
+        return is_null($status) ? $query : $query->where('status', $status);
+    }
+
+    #[Scope]
+    public function filterDateRange(Builder $query, ?string $dateFrom, ?string $dateTo): Builder
+    {
+        if (is_null($dateFrom) && is_null($dateTo)) {
+            return $query;
+        }
+
+        return $query->whereDate('starts_at', '>=', $dateFrom)
+            ->whereDate('ends_at', '<=', $dateTo);
     }
 }

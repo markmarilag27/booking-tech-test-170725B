@@ -9,7 +9,7 @@ ARG GROUP_ID=1000
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libonig-dev libxml2-dev libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libpq-dev libcurl4-openssl-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath zip gd
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath zip gd intl
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
